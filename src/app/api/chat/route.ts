@@ -1,6 +1,8 @@
-// import { Message, OpenAIStream, StreamingTextResponse } from "ai"
-import OpenAI from "openai"
-import { convertToCoreMessages, Message } from "ai"
+import { openai } from "@ai-sdk/openai"
+import {
+  Message,
+  streamText,
+} from "ai"
 import { getContext } from "@/lib/context"
 import { db } from "@/lib/db"
 import { chats, messages as _messages } from "@/lib/db/schema"
@@ -8,7 +10,6 @@ import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 export const runtime = "edge"
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 export async function POST(req: Request, res: Response) {
   try {
     const { messages, chatId } = await req.json()
@@ -45,13 +46,17 @@ export async function POST(req: Request, res: Response) {
     }
 
     // const model = openai("gpt-4-0125-preview")
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4-0125-preview",
+    const stream = await streamText({
+      model: openai("gpt-4-0125-preview"),
       messages: [
         prompt,
         ...messages.filter((message: Message) => message.role === "user"),
       ],
+      onFinish(event) {
+        console.log("onFinish", event)
+      },
     })
+    return stream.toDataStreamResponse()
     // const stream = OpenAIStream(response, {
     //   onStart: async () => {
     //     // save user message into db
