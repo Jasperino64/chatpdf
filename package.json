@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.66",
     "@aws-sdk/client-s3": "^3.667.0",
     "@aws-sdk/client-ses": "^3.667.0",
     "@aws-sdk/credential-providers": "^3.667.0",
@@ -16,22 +17,31 @@
     "@langchain/community": "^0.3.4",
     "@langchain/core": "^0.3.8",
     "@neondatabase/serverless": "^0.6.1",
+    "@pinecone-database/doc-splitter": "^0.0.1",
     "@pinecone-database/pinecone": "^3.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.2.2",
     "@tanstack/react-query": "^5.59.0",
+    "@types/md5": "^2.3.5",
+    "ai": "^3.4.9",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "dotenv": "^16.3.1",
+    "crypto": "npm:crypto-browserify",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "lucide-react": "^0.294.0",
+    "md5": "^2.3.0",
     "next": "14.0.4",
+    "openai": "^4.67.3",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
     "pdf-parse": "^1.1.1",
     "pg": "^8.11.3",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
+    "stream": "npm:stream-browserify",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7"
   },
@@ -46,5 +56,8 @@
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "browser": {
+    "crypto": false
   }
 }

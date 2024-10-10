@@ -4,15 +4,17 @@ import { uploadToS3 } from "@/lib/s3"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { Inbox, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import React from "react"
 import { useDropzone } from "react-dropzone"
 
 type Props = {}
 
 const FileUpload = (props: Props) => {
+  const router = useRouter()
   const { toast } = useToast()
   const [uploading, setUploading] = React.useState(false)
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async ({
       file_key,
       file_name,
@@ -64,17 +66,19 @@ const FileUpload = (props: Props) => {
           title: data.file_key + data.file_name + " File uploaded successfully",
         })
         mutate(data, {
-          onSuccess: (data) => {
+          onSuccess: ({ chat_id }) => {
             toast({
               title: "Success",
               description: "Chat created successfully",
             })
+            router.push(`/chat/${chat_id}`)
           },
           onError: (err) => {
             toast({
               variant: "destructive",
-              title: "Failed to create chat",
+              title: "Failed to create chat" + err,
             })
+            console.error(err)
           },
         })
       } catch (error) {
@@ -93,7 +97,7 @@ const FileUpload = (props: Props) => {
           py-8 flex justify-center items-center flex-col"
       >
         <input {...getInputProps()} />
-        {uploading || isLoading ? (
+        {uploading || isPending ? (
           <>
             {/*loading */}
             <Loader2 className="h-10 w-10 text-blue-500 animate-spin" />
