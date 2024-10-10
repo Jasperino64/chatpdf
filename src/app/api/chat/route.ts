@@ -1,8 +1,5 @@
 import { openai } from "@ai-sdk/openai"
-import {
-  Message,
-  streamText,
-} from "ai"
+import { Message, streamText } from "ai"
 import { getContext } from "@/lib/context"
 import { db } from "@/lib/db"
 import { chats, messages as _messages } from "@/lib/db/schema"
@@ -13,19 +10,15 @@ export const runtime = "edge"
 export async function POST(req: Request, res: Response) {
   try {
     const { messages, chatId } = await req.json()
-    console.log("🚀 ~ POST ~ chatId:", chatId)
-    console.log("🚀 ~ POST ~ messages:", messages)
 
     const _chats = await db.select().from(chats).where(eq(chats.id, chatId))
     if (_chats.length != 1) {
       return NextResponse.json({ error: "chat not found" }, { status: 404 })
     }
     const fileKey = _chats[0].fileKey
-    console.log("🚀 ~ POST ~ fileKey:", fileKey)
     const lastMessage = messages[messages.length - 1]
 
     const context = await getContext(lastMessage.content, fileKey)
-    console.log("🚀 ~ POST ~ context:", context)
 
     const prompt = {
       role: "system",
@@ -52,8 +45,23 @@ export async function POST(req: Request, res: Response) {
         prompt,
         ...messages.filter((message: Message) => message.role === "user"),
       ],
-      onFinish(event) {
-        console.log("onFinish", event)
+      onFinish: async (completion) => {
+        const text = completion.text
+        console.log("🚀 ~ onFinish: ~ completion:", lastMessage.content)
+        console.log("🚀 ~ onFinish: ~ completion:", text)
+        // save  user message into db
+        await db.insert(_messages).values({
+          chatId,
+          content: lastMessage.content,
+          role: "user",
+        })
+        // save ai message into db
+
+        await db.insert(_messages).values({
+          chatId,
+          content: text,
+          role: "system",
+        })
       },
     })
     return stream.toDataStreamResponse()

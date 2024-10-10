@@ -11,8 +11,6 @@ export async function getEmbeddings(text: string) {
       input: text.replace(/\n/g, " "),
     })
 
-    console.log("🚀 ~ getEmbeddings ~ result:", response)
-
     return response.data[0].embedding as number[]
   } catch (error) {
     console.log("error calling openai embeddings api", error)
