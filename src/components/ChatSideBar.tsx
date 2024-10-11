@@ -7,6 +7,7 @@ import { MessageCircle, PlusCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import axios from "axios"
 import SubscriptionButton from "./SubscriptionButton"
+import { SignOutButton } from "@clerk/nextjs"
 
 type Props = {
   chats: DrizzleChat[]
@@ -54,9 +55,22 @@ const ChatSideBar = ({ chats, chatId, isPro }: Props) => {
         ))}
         <div className="absolute bottom-4 left-4">
           <div className="flex items-center gap-2 text-sm text-slate-500 flex-wrap">
-            <Link href="/">Home</Link>
+            <Link href="/">
+              <Button className="bg-blue-700" variant="default">
+                Home
+              </Button>
+            </Link>
           </div>
-          {isPro && <div className="mt-2"><SubscriptionButton isPro={isPro} /></div>}
+          {isPro && (
+            <div className="mt-2">
+              <SubscriptionButton isPro={isPro} />
+            </div>
+          )}
+          <SignOutButton>
+            <div className="mt-2">
+              <Button variant="destructive">Sign out</Button>
+            </div>
+          </SignOutButton>
           {/* <Button
             onClick={handleSubscription}
             className="mt-2 text-white bg-slate-600"
