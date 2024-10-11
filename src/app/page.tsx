@@ -59,8 +59,7 @@ export default async function Home() {
               needToSubscribe ? (
                 <>
                   <p className="text-lg">
-                    You have more than 2 chats. Please subscribe to create more
-                    chats.
+                    You have used all your free chats. Subscribe to get more!
                   </p>
                   <SubscriptionButton isPro={isPro} />
                 </>
