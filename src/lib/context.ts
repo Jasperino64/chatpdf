@@ -10,8 +10,8 @@ export async function getMatchesFromEmbeddings(
     const client = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!,
     })
-    const pc = await client.index("chatpdf-jasper")
-    const namespace = pc.namespace(convertToAscii(fileKey))
+    const index = await client.index("chatpdf-jasper")
+    const namespace = index.namespace(convertToAscii(fileKey))
     const queryResult = await namespace.query({
       topK: 5,
       vector: embeddings,
