@@ -71,7 +71,7 @@ const FileUpload = (props: Props) => {
               title: "Success",
               description: "Chat created successfully",
             })
-            router.push(`/chat/${chat_id}`)
+            router.push(`/chats/${chat_id}`)
           },
           onError: (err) => {
             toast({

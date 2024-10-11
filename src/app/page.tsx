@@ -11,6 +11,8 @@ import SubscriptionButton from "@/components/SubscriptionButton"
 import { checkSubscription } from "@/lib/subscription"
 export default async function Home() {
   const { userId } = await auth()
+  const isPro = await checkSubscription()
+  let needToSubscribe = false
   let firstchat
   if (userId) {
     let userchats = await db
@@ -20,10 +22,14 @@ export default async function Home() {
     if (userchats.length > 0) {
       firstchat = userchats[0]
     }
+
+    if (userchats.length > 2 && !isPro) {
+      needToSubscribe = true
+    }
   }
 
   const isAuth = !!userId
-  const isPro = await checkSubscription()
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-400 via-rose-200 to-sky-400">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -46,11 +52,21 @@ export default async function Home() {
               </>
             )}
           </div>
-          <p className="max-w-xl mt-1 text-lg">Join the AI revolution</p>
+          <p className="max-w-xl mt-1 text-lg">Works as of 10/11/2024</p>
 
           <div className="w-full mt-4">
             {isAuth ? (
-              <FileUpload />
+              needToSubscribe ? (
+                <>
+                  <p className="text-lg">
+                    You have more than 2 chats. Please subscribe to create more
+                    chats.
+                  </p>
+                  <SubscriptionButton isPro={isPro} />
+                </>
+              ) : (
+                <FileUpload />
+              )
             ) : (
               <Link href="/sign-in">
                 <Button>
