@@ -4,8 +4,19 @@ import { UserButton, auth } from "@clerk/nextjs"
 import { LogIn } from "lucide-react"
 import Link from "next/link"
 import Jimmy from "@/app/jimmy/page"
+import { db } from "@/lib/db"
+import { chats } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
 export default async function Home() {
   const { userId } = await auth()
+  let firstchat
+  if (userId) {
+    firstchat = await db.select().from(chats).where(eq(chats.userId, userId))
+    if (firstchat.length > 0) {
+      firstchat = firstchat[0]
+    }
+  }
+
   const isAuth = !!userId
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-400 via-rose-200 to-sky-400">
@@ -16,7 +27,11 @@ export default async function Home() {
             <UserButton afterSignOutUrl="/" />
           </div>
           <div className="flex mt-2">
-            {isAuth && <Button>Go to Chats</Button>}
+            {isAuth && (
+              <Link href={`/chat/${firstchat.id}`}>
+                <Button>Go to Chats</Button>
+              </Link>
+            )}
           </div>
           <p className="max-w-xl mt-1 text-lg">Join the AI revolution</p>
 
