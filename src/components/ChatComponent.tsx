@@ -20,12 +20,12 @@ const ChatComponent = ({ chatId }: Props) => {
       return response.data
     },
   })
-  const chatContainer = React.useRef<HTMLDivElement>(null)
+  const messageContainer = React.useRef<HTMLDivElement>(null)
   const scrollToBottom = () => {
     const { offsetHeight, scrollHeight, scrollTop } =
-      chatContainer.current as HTMLDivElement
+      messageContainer.current as HTMLDivElement
     if (scrollHeight >= offsetHeight + scrollTop) {
-      chatContainer.current?.scrollTo(0, scrollHeight + 200)
+      messageContainer.current?.scrollTo(0, scrollHeight + 200)
     }
   }
 
@@ -43,6 +43,13 @@ const ChatComponent = ({ chatId }: Props) => {
       </div>
     )
   }
+
+  React.useEffect(() => {
+    messageContainer.current?.scrollTo({
+      top: messageContainer.current.scrollHeight,
+      behavior: "smooth",
+    })
+  }, [messages])
   return (
     <div className="flex flex-col h-screen">
       {/* header */}
@@ -51,7 +58,7 @@ const ChatComponent = ({ chatId }: Props) => {
       </div>
 
       {/* messages */}
-      <div ref={chatContainer} className="flex-grow overflow-y-auto px-4">
+      <div ref={messageContainer} className="flex-grow overflow-y-auto px-4">
         {renderResponse()}
       </div>
 

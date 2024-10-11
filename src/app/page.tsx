@@ -1,12 +1,14 @@
 import FileUpload from "@/components/FileUpload"
 import { Button } from "@/components/ui/button"
 import { UserButton, auth } from "@clerk/nextjs"
-import { LogIn } from "lucide-react"
+import { ArrowRight, LogIn } from "lucide-react"
 import Link from "next/link"
 import Jimmy from "@/app/jimmy/page"
 import { db } from "@/lib/db"
 import { chats } from "@/lib/db/schema"
 import { eq } from "drizzle-orm"
+import SubscriptionButton from "@/components/SubscriptionButton"
+import { checkSubscription } from "@/lib/subscription"
 export default async function Home() {
   const { userId } = await auth()
   let firstchat
@@ -21,6 +23,7 @@ export default async function Home() {
   }
 
   const isAuth = !!userId
+  const isPro = await checkSubscription()
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-400 via-rose-200 to-sky-400">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -31,9 +34,16 @@ export default async function Home() {
           </div>
           <div className="flex mt-2">
             {isAuth && firstchat && (
-              <Link href={`/chat/${firstchat.id}`}>
-                <Button>Go to Chats</Button>
-              </Link>
+              <>
+                <Link href={`/chats/${firstchat.id}`}>
+                  <Button>
+                    Go to Chats <ArrowRight className="ml-2" />
+                  </Button>
+                </Link>
+                <div className="ml-3">
+                  <SubscriptionButton isPro={isPro} />
+                </div>
+              </>
             )}
           </div>
           <p className="max-w-xl mt-1 text-lg">Join the AI revolution</p>

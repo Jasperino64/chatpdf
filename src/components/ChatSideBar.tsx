@@ -16,7 +16,17 @@ type Props = {
 
 const ChatSideBar = ({ chats, chatId, isPro }: Props) => {
   const [loading, setLoading] = React.useState(false)
-
+  const handleSubscription = async () => {
+    try {
+      setLoading(true)
+      const response = await axios.get("/api/stripe")
+      window.location.href = response.data.url
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <div className="w-full h-screen overflow-scroll soff p-4 text-gray-200 bg-gray-900">
       <Link href="/">
@@ -42,6 +52,19 @@ const ChatSideBar = ({ chats, chatId, isPro }: Props) => {
             </div>
           </Link>
         ))}
+        <div className="absolute bottom-4 left-4">
+          <div className="flex items-center gap-2 text-sm text-slate-500 flex-wrap">
+            <Link href="/">Home</Link>
+          </div>
+          {isPro && <div className="mt-2"><SubscriptionButton isPro={isPro} /></div>}
+          {/* <Button
+            onClick={handleSubscription}
+            className="mt-2 text-white bg-slate-600"
+            disabled={loading}
+          >
+            Upgrade
+          </Button> */}
+        </div>
       </div>
     </div>
   )

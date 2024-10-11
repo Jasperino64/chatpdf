@@ -13,12 +13,12 @@ export const POST = async (req: Request) => {
       return NextResponse.json({ error: "chatId is required" }, { status: 400 })
     }
 
-    console.log("***** getting messages for chatId", chatId)
+    // console.log("***** getting messages for chatId", chatId)
     const _messages = await db
       .select()
       .from(messages)
       .where(eq(messages.chatId, chatId))
-    console.log("***** messages", _messages.length)
+    // console.log("***** messages", _messages.length)
     return NextResponse.json(_messages)
   } catch (error) {
     console.error("Error fetching messages:", error)
