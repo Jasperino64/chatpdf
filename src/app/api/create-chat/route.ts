@@ -26,7 +26,7 @@ export async function POST(req: Request, res: Response) {
     // Vectorize PDF
     await loadS3IntoPinecone(file_key)
     // console.log("Pages", pages)
-    console.log(file_key, file_name)
+    // console.log(file_key, file_name)
 
     // Create chat
     const chat_id = await db

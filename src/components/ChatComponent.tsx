@@ -11,8 +11,6 @@ import axios from "axios"
 type Props = { chatId: number }
 
 const ChatComponent = ({ chatId }: Props) => {
-  console.log("🚀 ~ ChatComponent ~ chatId:", chatId)
-
   const { data, isLoading } = useQuery({
     queryKey: ["chat", chatId],
     queryFn: async () => {

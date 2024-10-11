@@ -47,8 +47,8 @@ export async function POST(req: Request, res: Response) {
       ],
       onFinish: async (completion) => {
         const text = completion.text
-        console.log("🚀 ~ onFinish: ~ completion:", lastMessage.content)
-        console.log("🚀 ~ onFinish: ~ completion:", text)
+        // console.log("🚀 ~ onFinish: ~ completion:", lastMessage.content)
+        // console.log("🚀 ~ onFinish: ~ completion:", text)
         // save  user message into db
         await db.insert(_messages).values({
           chatId,
