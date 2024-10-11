@@ -11,9 +11,12 @@ export default async function Home() {
   const { userId } = await auth()
   let firstchat
   if (userId) {
-    firstchat = await db.select().from(chats).where(eq(chats.userId, userId))
-    if (firstchat.length > 0) {
-      firstchat = firstchat[0]
+    let userchats = await db
+      .select()
+      .from(chats)
+      .where(eq(chats.userId, userId))
+    if (userchats.length > 0) {
+      firstchat = userchats[0]
     }
   }
 
@@ -27,7 +30,7 @@ export default async function Home() {
             <UserButton afterSignOutUrl="/" />
           </div>
           <div className="flex mt-2">
-            {isAuth && (
+            {isAuth && firstchat && (
               <Link href={`/chat/${firstchat.id}`}>
                 <Button>Go to Chats</Button>
               </Link>
