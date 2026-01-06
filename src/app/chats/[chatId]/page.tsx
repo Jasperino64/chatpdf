@@ -1,38 +1,40 @@
-import ChatComponent from "@/components/ChatComponent"
-import ChatSideBar from "@/components/ChatSideBar"
-import PDFViewer from "@/components/PDFViewer"
-import { db } from "@/lib/db"
-import { chats } from "@/lib/db/schema"
-import { checkSubscription } from "@/lib/subscription"
+import ChatComponent from "@/components/ChatComponent";
+import ChatSideBar from "@/components/ChatSideBar";
+import PDFViewer from "@/components/PDFViewer";
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { chats } from "@/lib/db/schema";
+import { checkSubscription } from "@/lib/subscription";
 // import { checkSubscription } from "@/lib/subscription";
-import { auth } from "@clerk/nextjs"
-import { eq } from "drizzle-orm"
-import { redirect } from "next/navigation"
-import React from "react"
+import { auth } from "@clerk/nextjs";
+import { eq } from "drizzle-orm";
+import { DownloadIcon } from "lucide-react";
+import { redirect } from "next/navigation";
+import React from "react";
 
 type Props = {
   params: {
-    chatId: string
-  }
-}
+    chatId: string;
+  };
+};
 
 const ChatPage = async ({ params: { chatId } }: Props) => {
-  const { userId } = await auth()
+  const { userId } = await auth();
   if (!userId) {
-    return redirect("/sign-in")
+    return redirect("/sign-in");
   }
-  const _chats = await db.select().from(chats).where(eq(chats.userId, userId))
+  const _chats = await db.select().from(chats).where(eq(chats.userId, userId));
   if (!_chats) {
-    return redirect("/")
+    return redirect("/");
   }
   if (!_chats.find((chat) => chat.id === parseInt(chatId))) {
-    return redirect("/")
+    return redirect("/");
   }
 
-  const currentChat = _chats.find((chat) => chat.id === parseInt(chatId))
+  const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
   // console.log(currentChat)
 
-  const isPro = await checkSubscription()
+  const isPro = await checkSubscription();
 
   return (
     <div className="flex max-h-screen overflow-scroll">
@@ -42,7 +44,18 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
           <ChatSideBar chats={_chats} chatId={parseInt(chatId)} isPro={isPro} />
         </div>
         {/* pdf viewer */}
-        <div className="max-h-screen p-4 oveflow-scroll flex-[5]">
+        <div className="relative max-h-screen p-4 oveflow-scroll flex-[5]">
+          <a
+            href={currentChat?.pdfUrl}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute top-6 left-6 rounded-md"
+          >
+            <Button className="rounded-lg">
+              <DownloadIcon />
+            </Button>
+          </a>
           <PDFViewer pdfUrl={currentChat?.pdfUrl || ""} />
         </div>
         {/* chat component */}
@@ -51,7 +64,7 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChatPage
+export default ChatPage;

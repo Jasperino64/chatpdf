@@ -63,7 +63,7 @@ const FileUpload = (props: Props) => {
           return
         }
         toast({
-          title: data.file_key + data.file_name + " File uploaded successfully",
+          title: data.file_name + " File uploaded successfully",
         })
         mutate(data, {
           onSuccess: ({ chat_id }) => {
